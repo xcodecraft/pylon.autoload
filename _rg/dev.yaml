@@ -1,0 +1,17 @@
+_dev:
+    - !C.project
+        name : "autoload"
+        root : "${HOME}/devspace/autoload"
+    - !C.version
+        file : "src/version.txt"
+    - !C.git
+        remote : "git@github.com:xcodecraft/pylon.autoload.git"
+    - !C.sonar
+        runner   : "/data/x/tools/sonar/bin/sonar-runner"
+        qube     : "http://sonar.xcodecraft.com"
+        src      : "src"
+        language : "php"
+        config:
+            - "sonar.php.coverage.reportPath=test/reports/phpunit.coverage.xml"
+            - "sonar.php.tests.reportPath=test/reports/phpunit.report.xml"
+

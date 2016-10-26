@@ -1,0 +1,61 @@
+_env:
+    - !R.env
+        _name    : "_local_deploy"
+        _res :
+            - !R.project
+                root        : "${HOME}/devspace/pylon.autoload"
+                name        : "autoload"
+            - !R.vars
+                AYI_SDK      : "${HOME}/devspace/ayi_sdks/src"
+                PLATFORM_SDK : "/data/x/sdks/platform_sdks"
+                BASE_INCLUDE : "${PRJ_ROOT}/src/"
+                PHP_ERROR    : "E_ALL & ~E_NOTICE"
+    - !R.env
+        _name    : "_lib_deploy"
+        _res :
+            - !R.project
+                root         : "/data/x/projects/pylon.autoload"
+                name         : "autoload"
+                BASE_INCLUDE : "${PRJ_ROOT}/src/loader"
+            - !R.vars
+                PHP_ERROR    : "E_ALL & ~E_NOTICE"
+
+    - !R.env
+        _name : "base"
+        _res :
+            - !R.vars
+                RIGGER  : "/data/x/tools/rigger-ng/"
+
+    - !R.env
+        _name    : "dev"
+        _mix :   "_local_deploy,base"
+        _res :
+            - !R.vars
+                ENV                 : "dev"
+
+
+_sys:
+    -  !R.system
+        _name : "test"
+        _res:
+            - !R.vars
+                PHP_INI      : "${PRJ_ROOT}/conf/used/test_php.ini"
+                INCLUDE_PATH : "${PRJ_ROOT}/test/tc"
+                TEST_PATH    : "test"
+                INDEX_PATH   : "${PRJ_ROOT}/run/test/autoload"
+            - !R.pylon_autoload
+                include :  "${INCLUDE_PATH}"
+            - !R.file_tpl
+                tpl    : "${PRJ_ROOT}/conf/tpls/test_php.ini"
+                dst    : "${PHP_INI}"
+            - !R.php
+                ini     : "${PHP_INI}"
+                script  : "/usr/local/php/bin/phpunit"
+                args    : "--configuration ${PRJ_ROOT}/${TEST_PATH}/phpunit.xml "
+
+
+# dst     :  "${PRJ_ROOT}/bin/autoload"
+# - !R.using
+#     modul : "phpunit"
+#     args  : !R.vars
+#         TEST_INCLUDE: "${PRJ_ROOT}/src:${PRJ_ROOT}/test/"
